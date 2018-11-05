@@ -2,14 +2,37 @@ import XCTest
 @testable import RHBDataStructures
 
 final class RHBDataStructuresTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(RHBDataStructures().text, "Hello, World!")
-    }
-
     static var allTests = [
-        ("testExample", testExample),
+        ("testWeakWrapperRetained", testWeakWrapperRetained),
+        ("testWeakWrapperUnretained", testWeakWrapperUnretained),
+        ("testWeakWrapperNullability", testWeakWrapperNullability),
+        ("testWeakWrapperScope", testWeakWrapperScope),
     ]
+    func testWeakWrapperRetained() {
+        let object = NSObject()
+        let container = WeakObjectWrapper(object)
+        XCTAssertEqual(object, container.object)
+    }
+    func testWeakWrapperUnretained() {
+        let container = WeakObjectWrapper(NSObject())
+        XCTAssertNil(container.object)
+    }
+    func testWeakWrapperNullability() {
+        var object: NSObject! = NSObject()
+        let container = WeakObjectWrapper(object)
+        XCTAssertNotNil(container.object)
+        XCTAssertEqual(object, container.object)
+        object = nil
+        XCTAssertNil(container.object)
+    }
+    func testWeakWrapperScope() {
+        let container: WeakObjectWrapper<NSObject> = {
+            let object: NSObject = NSObject()
+            let container = WeakObjectWrapper(object)
+            XCTAssertNotNil(container.object)
+            XCTAssertEqual(object, container.object)
+            return container
+        }()
+        XCTAssertNil(container.object)
+    }
 }
