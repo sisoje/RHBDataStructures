@@ -1,23 +1,26 @@
 import XCTest
-@testable import RHBDataStructures
+import RHBDataStructures
 
 final class RHBDataStructuresTests: XCTestCase {
     static var allTests = [
-        ("testWeakWrapperRetained", testWeakWrapperRetained),
-        ("testWeakWrapperUnretained", testWeakWrapperUnretained),
-        ("testWeakWrapperNullability", testWeakWrapperNullability),
-        ("testWeakWrapperScope", testWeakWrapperScope),
+        ("testWeakObjectWrapperRetained", testWeakObjectWrapperRetained),
+        ("testWeakObjectWrapperUnretained", testWeakObjectWrapperUnretained),
+        ("testWeakObjectWrapperNullability", testWeakObjectWrapperNullability),
+        ("testWeakObjectWrapperScope", testWeakObjectWrapperScope),
+        ("testDeiniter", testDeiniter),
+        ("testDeiniterArray", testDeiniterArray),
+        ("testIfBlock", testIfBlock),
     ]
-    func testWeakWrapperRetained() {
+    func testWeakObjectWrapperRetained() {
         let object = NSObject()
         let container = WeakObjectWrapper(object)
         XCTAssertEqual(object, container.object)
     }
-    func testWeakWrapperUnretained() {
+    func testWeakObjectWrapperUnretained() {
         let container = WeakObjectWrapper(NSObject())
         XCTAssertNil(container.object)
     }
-    func testWeakWrapperNullability() {
+    func testWeakObjectWrapperNullability() {
         var object: NSObject! = NSObject()
         let container = WeakObjectWrapper(object)
         XCTAssertNotNil(container.object)
@@ -25,7 +28,7 @@ final class RHBDataStructuresTests: XCTestCase {
         object = nil
         XCTAssertNil(container.object)
     }
-    func testWeakWrapperScope() {
+    func testWeakObjectWrapperScope() {
         let container: WeakObjectWrapper<NSObject> = {
             let object: NSObject = NSObject()
             let container = WeakObjectWrapper(object)
@@ -34,5 +37,34 @@ final class RHBDataStructuresTests: XCTestCase {
             return container
         }()
         XCTAssertNil(container.object)
+    }
+    func testDeiniter() {
+        var t = 0
+        _ = {
+            XCTAssert(t == 0)
+            _ = Deiniter { t = 1 }
+        }()
+        XCTAssert(t == 1)
+    }
+    func testDeiniterArray() {
+        var t = 0
+        _ = {
+            XCTAssert(t == 0)
+            var m: [Deiniter] = []
+            m.append { t = 1 }
+        }()
+        XCTAssert(t == 1)
+    }
+    func testIfBlock() {
+        IfDebug.yes {
+            #if !DEBUG
+            XCTFail()
+            #endif
+        }
+        IfDebug.no {
+            #if DEBUG
+            XCTFail()
+            #endif
+        }
     }
 }
