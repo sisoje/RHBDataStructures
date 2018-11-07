@@ -2,15 +2,6 @@ import XCTest
 import RHBDataStructures
 
 final class RHBDataStructuresTests: XCTestCase {
-    static var allTests = [
-        ("testWeakObjectWrapperRetained", testWeakObjectWrapperRetained),
-        ("testWeakObjectWrapperUnretained", testWeakObjectWrapperUnretained),
-        ("testWeakObjectWrapperNullability", testWeakObjectWrapperNullability),
-        ("testWeakObjectWrapperScope", testWeakObjectWrapperScope),
-        ("testDeiniter", testDeiniter),
-        ("testDeiniterArray", testDeiniterArray),
-        ("testIfBlock", testIfBlock),
-    ]
     func testWeakObjectWrapperRetained() {
         let object = NSObject()
         let container = WeakObjectWrapper(object)
