@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
     s.name             = 'RHBDataStructures'
     s.version          = '1.0.0'
-    s.summary          = 'More control when adding block to operation queue.'
+    s.summary          = 'Some exotic data structures.'
 
     s.description      = <<-DESC
-    OperationsKit provides more control when adding block to OperationQueue. Also adds BlockOperation initializer.
+    RHBDataStructures are some exotic data structures.
                        DESC
 
     s.homepage         = "https://github.com/sisoje/#{s.name}"
