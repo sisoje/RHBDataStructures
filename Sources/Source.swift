@@ -1,6 +1,6 @@
 import Foundation
 
-public class MutableValueWrapper<T> {
+public class MutableWrapper<T> {
     public var value: T
     public init(_ value: T) {
         self.value = value
@@ -31,6 +31,9 @@ public extension Array where Element == Deiniter {
 }
 
 public struct IfBlock {
+    public init(_ block: @escaping () -> Bool) {
+        self.conditionBlock = block
+    }
     public let conditionBlock: () -> Bool
     public func yes(_ block: () -> Void) {
         if conditionBlock() {
