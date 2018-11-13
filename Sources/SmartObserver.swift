@@ -3,7 +3,7 @@ import Foundation
 public class SmartObserver {
     var deinitBlock: DeinitBlock?
     init(_ block: @escaping () -> Void) {
-        self.deinitBlock = DeinitBlock(onDeinit: block)
+        self.deinitBlock = DeinitBlock(block)
     }
     public func remove() {
         deinitBlock = nil
