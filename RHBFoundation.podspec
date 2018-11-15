@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
-    s.name             = 'RHBDataStructures'
+    s.name             = 'RHBFoundation'
     s.version          = '1.0.0'
     s.summary          = 'Some exotic data structures.'
 
     s.description      = <<-DESC
-    RHBDataStructures are some exotic data structures.
+    RHBFoundation are some exotic data structures.
                        DESC
 
     s.homepage         = "https://github.com/sisoje/#{s.name}"

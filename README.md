@@ -1,2 +1,2 @@
-# RHBDataStructures
-Basic data structures for doing some tricks
+# RHBFoundation
+Basic structures, algorithms, extensions, patterns, operators... for doing some basic tricks
