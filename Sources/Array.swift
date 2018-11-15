@@ -1,18 +1,14 @@
 import Foundation
 
 public extension Array {
-    mutating func grow(to n: Index, _ block: () -> Element) {
+    mutating func grow(to n: Index, _ block: (Index) -> Element) {
         while count < n {
-            append(block())
+            append(block(count))
         }
     }
     mutating func shrink(to n: Index) {
         while count > n {
             removeLast()
         }
-    }
-    init(size: Index, _ block: () -> Element) {
-        self.init()
-        grow(to: size, block)
     }
 }
