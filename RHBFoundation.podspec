@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
     s.name             = 'RHBFoundation'
-    s.version          = '1.0.0'
-    s.summary          = 'Some exotic data structures.'
+    s.version          = '1.1.0'
+    s.summary          = 'Basic structures, algorithms, extensions, patterns, operators...'
 
     s.description      = <<-DESC
-    RHBFoundation are some exotic data structures.
+    RHBFoundation are some basic structures, algorithms, extensions, patterns, operators... for doing some basic tricks.
                        DESC
 
     s.homepage         = "https://github.com/sisoje/#{s.name}"
