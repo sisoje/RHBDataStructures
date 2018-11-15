@@ -28,3 +28,19 @@ public let IfDebug = IfBlock {
 public let IfSimulator = IfBlock {
     return TARGET_OS_SIMULATOR != 0
 }
+
+public let IfMacos = IfBlock {
+    #if os(macOS)
+    return true
+    #else
+    return false
+    #endif
+}
+
+public let IfIos = IfBlock {
+    #if os(iOS)
+    return true
+    #else
+    return false
+    #endif
+}
