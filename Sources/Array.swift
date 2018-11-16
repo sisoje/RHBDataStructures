@@ -6,9 +6,7 @@ public extension Array {
             append(block(count))
         }
     }
-    mutating func shrink(to n: Index) {
-        while count > n {
-            removeLast()
-        }
+    func grown(to n: Index, _ block: (Index) -> Element) -> Array {
+        return self ~~~ { $0.value.grow(to: n, block) }
     }
 }
