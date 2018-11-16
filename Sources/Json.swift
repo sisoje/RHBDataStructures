@@ -2,7 +2,9 @@ import Foundation
 
 public extension Decodable {
     static func jsonCompletionHandler(jsonDecoder: JSONDecoder = JSONDecoder(), _ block: @escaping (Self?, Data?, URLResponse?, Error?) -> Void) -> (Data?, URLResponse?, Error?) -> Void {
-        return { block($0?.jsonObject(jsonDecoder: jsonDecoder), $0, $1, $2) }
+        return { data,response,error in
+            block(data?.jsonObject(jsonDecoder: jsonDecoder), data, response, error)
+        }
     }
 }
 
