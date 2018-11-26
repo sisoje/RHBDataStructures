@@ -1,39 +1,20 @@
 import Foundation
 
-precedencegroup MutationPrecedence {
-    higherThan: MultiplicationPrecedence
-    associativity: left
-}
-
-infix operator ~~~: MutationPrecedence
-infix operator ~~: MutationPrecedence
-
-@discardableResult
-public func mutateBlock<T>(_ value: T, _ block: (T) -> Void) -> T {
-    block(value)
-    return value
-}
-
-@discardableResult
-public func mutateBlock<T>(_ value: T?, _ block: (T) -> Void) -> T? {
-    if let value = value {
-        block(value)
-    }
-    return value
-}
+infix operator ~~~: MultiplicationPrecedence
+infix operator ~~: MultiplicationPrecedence
 
 public func ~~<U: AnyObject>(object: U, block: (U) -> Void) -> U {
-    return mutateBlock(object, block)
+    block(object)
+    return object
 }
 
 public func ~~<U: AnyObject>(optional: U?, block: (U) -> Void) -> U? {
-    return mutateBlock(optional, block)
-}
-
-public func ~~<U>(optional: U?, block: (U) -> Void) {
-    mutateBlock(optional, block)
+    if let object = optional {
+        block(object)
+    }
+    return optional
 }
 
 public func ~~~<U>(value: U, block: (MutableValueWrapper<U>) -> Void) -> U {
-    return mutateBlock(MutableValueWrapper(value), block).value
+    return (MutableValueWrapper(value) ~~ block).value
 }
