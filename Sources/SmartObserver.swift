@@ -5,7 +5,7 @@ public class SmartObserver {
     init(_ block: @escaping () -> Void) {
         self.deinitBlock = DeinitBlock(block)
     }
-    public func remove() {
+    public func removeFromNotificationCenter() {
         deinitBlock = nil
     }
 }

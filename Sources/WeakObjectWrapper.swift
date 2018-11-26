@@ -1,8 +1,8 @@
 import Foundation
 
 public class WeakObjectWrapper<T: AnyObject> {
-    public private(set) weak var object: T?
+    public private(set) weak var weakObject: T?
     public init(_ object: T?) {
-        self.object = object
+        self.weakObject = object
     }
 }
