@@ -1,8 +1,8 @@
 import Foundation
 
 public class MutableValueWrapper<T> {
-    public var value: T
+    public var mutableValue: T
     public init(_ value: T) {
-        self.value = value
+        self.mutableValue = value
     }
 }

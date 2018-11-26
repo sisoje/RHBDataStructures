@@ -7,6 +7,6 @@ public extension Array {
         }
     }
     func grown(to n: Index, _ block: (Index) -> Element) -> Array {
-        return self ~~~ { $0.value.grow(to: n, block) }
+        return self ~~ { $0.mutableValue.grow(to: n, block) }
     }
 }
