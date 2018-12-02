@@ -2,7 +2,7 @@ os:
   - osx
 osx_image: xcode10.1
 language: swift
-before_script:
+script:
   - swift build
 notifications:
   email:
