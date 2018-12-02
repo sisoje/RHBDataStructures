@@ -1,0 +1,10 @@
+os:
+  - osx
+osx_image: xcode10.1
+language: swift
+before_script:
+  - swift build
+notifications:
+  email:
+    on_success: change
+    on_failure: change
