@@ -9,9 +9,3 @@ public class DeinitBlock {
         onDeinit()
     }
 }
-
-public extension Array where Element == DeinitBlock {
-    mutating func append(_ block: @escaping () -> Void) {
-        append(DeinitBlock(block))
-    }
-}
