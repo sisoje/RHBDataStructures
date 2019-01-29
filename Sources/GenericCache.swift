@@ -1,6 +1,6 @@
 import Foundation
 
-public class GenericCache<H: Hashable, V: AnyObject> {
+open class GenericCache<H: Hashable, V: AnyObject> {
     public let nsCache = NSCache<AnyObject, V>()
     public init() {}
 }
