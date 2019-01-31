@@ -1,8 +1,7 @@
 import Foundation
 
 public extension URLSessionDataTask {
-    func taskRunner() -> DeinitBlock {
-        resume()
+    var canceller: DeinitBlock {
         return DeinitBlock { [weak self] in
             self?.cancel()
         }
