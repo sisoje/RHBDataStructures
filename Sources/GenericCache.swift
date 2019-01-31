@@ -6,6 +6,10 @@ open class GenericCache<H: Hashable, V: AnyObject> {
 }
 
 public extension GenericCache {
+    func removeAllObjects() {
+        nsCache.removeAllObjects()
+    }
+
     subscript(_ h: H) -> V? {
         get {
             return nsCache.object(forKey: h as AnyObject)
