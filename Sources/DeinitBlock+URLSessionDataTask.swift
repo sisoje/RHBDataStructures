@@ -6,4 +6,8 @@ public extension URLSessionDataTask {
             self?.cancel()
         }
     }
+    var runner: DeinitBlock {
+        resume()
+        return canceller
+    }
 }

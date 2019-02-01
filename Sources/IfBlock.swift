@@ -1,46 +1,51 @@
 import Foundation
 
 public struct IfBlock {
+    let conditionBlock: () -> Bool
     public init(_ block: @escaping () -> Bool) {
         self.conditionBlock = block
     }
-    public let conditionBlock: () -> Bool
-    public func yes(_ block: () -> Void) {
+}
+
+public extension IfBlock {
+    func yes(_ block: () -> Void) {
         if conditionBlock() {
             block()
         }
     }
-    public func no(_ block: () -> Void) {
+    func no(_ block: () -> Void) {
         if !conditionBlock() {
             block()
         }
     }
 }
 
-public let IfDebug = IfBlock {
-    #if DEBUG
-    return true
-    #else
-    return false
-    #endif
-}
+public extension IfBlock {
+    static let debug = IfBlock {
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
+    }
 
-public let IfSimulator = IfBlock {
-    return TARGET_OS_SIMULATOR != 0
-}
+    static let simulator = IfBlock {
+        return TARGET_OS_SIMULATOR != 0
+    }
 
-public let IfMacos = IfBlock {
-    #if os(macOS)
-    return true
-    #else
-    return false
-    #endif
-}
+    static let macos = IfBlock {
+        #if os(macOS)
+        return true
+        #else
+        return false
+        #endif
+    }
 
-public let IfIos = IfBlock {
-    #if os(iOS)
-    return true
-    #else
-    return false
-    #endif
+    static let ios = IfBlock {
+        #if os(iOS)
+        return true
+        #else
+        return false
+        #endif
+    }
 }

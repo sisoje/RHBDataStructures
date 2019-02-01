@@ -2,8 +2,8 @@ import Foundation
 
 public extension Timer {
     var invalidator: DeinitBlock {
-        return DeinitBlock {
-            self.invalidate()
+        return DeinitBlock { [weak self] in
+            self?.invalidate()
         }
     }
 }

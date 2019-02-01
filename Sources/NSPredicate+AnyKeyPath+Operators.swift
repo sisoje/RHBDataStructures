@@ -1,5 +1,11 @@
 import Foundation
 
+extension NSPredicate {
+    convenience init(key: String, op: String, value: Any) {
+        self.init(format: [key, op, "%@"].joined(separator: " "), argumentArray: [value])
+    }
+}
+
 extension AnyKeyPath {
     func predicate(_ op: String, _ value: Any) -> NSPredicate {
         return NSPredicate(key: _kvcKeyPathString!, op: op, value: value)
