@@ -1,20 +1,20 @@
 import Foundation
 
-public protocol TypedPredicateProtocol { associatedtype TP }
+public protocol TypedPredicateProtocol { associatedtype Root }
 
-public class TypedPredicate<T>: NSPredicate, TypedPredicateProtocol { public typealias TP = T }
-public class TypedCompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias TP = T }
-public class TypedComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias TP = T }
+public class TypedPredicate<T>: NSPredicate, TypedPredicateProtocol { public typealias Root = T }
+public class TypedCompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
+public class TypedComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
 
-public func &&<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> TypedCompoundPredicate<TP1.TP> where TP1.TP == TP2.TP {
+public func &&<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> TypedCompoundPredicate<TP1.Root> where TP1.Root == TP2.Root {
     return TypedCompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
 
-public func ||<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> TypedCompoundPredicate<TP1.TP> where TP1.TP == TP2.TP {
+public func ||<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> TypedCompoundPredicate<TP1.Root> where TP1.Root == TP2.Root {
     return TypedCompoundPredicate(type: .or, subpredicates: [p1, p2])
 }
 
-public prefix func !<TP: NSPredicate & TypedPredicateProtocol>(p: TP) -> TypedCompoundPredicate<TP.TP> {
+public prefix func !<TP: NSPredicate & TypedPredicateProtocol>(p: TP) -> TypedCompoundPredicate<TP.Root> {
     return TypedCompoundPredicate(type: .not, subpredicates: [p])
 }
 
@@ -31,30 +31,30 @@ extension KeyPath {
     }
 }
 
-public func ==<E: Equatable, O, K: KeyPath<O, E>>(kp: K, value: E) -> TypedComparisonPredicate<O> {
+public func ==<E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> TypedComparisonPredicate<R> {
     return NSComparisonPredicate.Operator.equalTo.predicate(leftExpression: kp.asExpression, value: value)
 }
 
-public func !=<E: Equatable, O, K: KeyPath<O, E>>(kp: K, value: E) -> TypedComparisonPredicate<O> {
+public func !=<E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> TypedComparisonPredicate<R> {
     return NSComparisonPredicate.Operator.notEqualTo.predicate(leftExpression: kp.asExpression, value: value)
 }
 
-public func ><C: Comparable, O, K: KeyPath<O, C>>(kp: K, value: C) -> TypedComparisonPredicate<O> {
+public func ><C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
     return NSComparisonPredicate.Operator.greaterThan.predicate(leftExpression: kp.asExpression, value: value)
 }
 
-public func <<C: Comparable, O, K: KeyPath<O, C>>(kp: K, value: C) -> TypedComparisonPredicate<O> {
+public func <<C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
     return NSComparisonPredicate.Operator.lessThan.predicate(leftExpression: kp.asExpression, value: value)
 }
 
-public func <=<C: Comparable, O, K: KeyPath<O, C>>(kp: K, value: C) -> TypedComparisonPredicate<O> {
+public func <=<C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
     return NSComparisonPredicate.Operator.lessThanOrEqualTo.predicate(leftExpression: kp.asExpression, value: value)
 }
 
-public func >=<C: Comparable, O, K: KeyPath<O, C>>(kp: K, value: C) -> TypedComparisonPredicate<O> {
+public func >=<C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
     return NSComparisonPredicate.Operator.greaterThanOrEqualTo.predicate(leftExpression: kp.asExpression, value: value)
 }
 
-public func ===<S: Sequence, O, K: KeyPath<O, S.Element>>(kp: K, values: S) -> TypedComparisonPredicate<O> where S.Element: Equatable {
+public func ===<S: Sequence, R, K: KeyPath<R, S.Element>>(kp: K, values: S) -> TypedComparisonPredicate<R> where S.Element: Equatable {
     return NSComparisonPredicate.Operator.in.predicate(leftExpression: kp.asExpression, value: values)
 }
