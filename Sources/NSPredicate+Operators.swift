@@ -1,8 +1,9 @@
 import Foundation
 
-public protocol TypedPredicateProtocol { associatedtype Root }
+public protocol TypedPredicateProtocol {
+    associatedtype Root
+}
 
-public class TypedPredicate<T>: NSPredicate, TypedPredicateProtocol { public typealias Root = T }
 public class TypedCompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
 public class TypedComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
 
