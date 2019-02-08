@@ -1,8 +1,6 @@
 import Foundation
 
-public protocol TypedPredicateProtocol {
-    associatedtype Root
-}
+public protocol TypedPredicateProtocol { associatedtype Root }
 
 public class TypedCompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
 public class TypedComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
@@ -19,43 +17,38 @@ public prefix func !<TP: NSPredicate & TypedPredicateProtocol>(p: TP) -> TypedCo
     return TypedCompoundPredicate(type: .not, subpredicates: [p])
 }
 
-extension NSComparisonPredicate.Operator {
-    func predicate<T>(leftExpression: NSExpression, value: Any?) -> TypedComparisonPredicate<T> {
-        let rightExpression = NSExpression(forConstantValue: value)
-        return TypedComparisonPredicate(leftExpression: leftExpression, rightExpression: rightExpression, modifier: .direct, type: self)
-    }
-}
-
 extension KeyPath {
-    var asExpression: NSExpression {
-        return NSExpression(forKeyPath: self)
+    func predicate(_ op: NSComparisonPredicate.Operator, _ value: Any?) -> TypedComparisonPredicate<Root> {
+        let ex1 = NSExpression(forKeyPath: self)
+        let ex2 = NSExpression(forConstantValue: value)
+        return TypedComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
     }
 }
 
 public func ==<E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> TypedComparisonPredicate<R> {
-    return NSComparisonPredicate.Operator.equalTo.predicate(leftExpression: kp.asExpression, value: value)
+    return kp.predicate(.equalTo, value)
 }
 
 public func !=<E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> TypedComparisonPredicate<R> {
-    return NSComparisonPredicate.Operator.notEqualTo.predicate(leftExpression: kp.asExpression, value: value)
+    return kp.predicate(.notEqualTo, value)
 }
 
 public func ><C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
-    return NSComparisonPredicate.Operator.greaterThan.predicate(leftExpression: kp.asExpression, value: value)
+    return kp.predicate(.greaterThan, value)
 }
 
 public func <<C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
-    return NSComparisonPredicate.Operator.lessThan.predicate(leftExpression: kp.asExpression, value: value)
+    return kp.predicate(.lessThan, value)
 }
 
 public func <=<C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
-    return NSComparisonPredicate.Operator.lessThanOrEqualTo.predicate(leftExpression: kp.asExpression, value: value)
+    return kp.predicate(.lessThanOrEqualTo, value)
 }
 
 public func >=<C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> TypedComparisonPredicate<R> {
-    return NSComparisonPredicate.Operator.greaterThanOrEqualTo.predicate(leftExpression: kp.asExpression, value: value)
+    return kp.predicate(.greaterThanOrEqualTo, value)
 }
 
 public func ===<S: Sequence, R, K: KeyPath<R, S.Element>>(kp: K, values: S) -> TypedComparisonPredicate<R> where S.Element: Equatable {
-    return NSComparisonPredicate.Operator.in.predicate(leftExpression: kp.asExpression, value: values)
+    return kp.predicate(.in, values)
 }
