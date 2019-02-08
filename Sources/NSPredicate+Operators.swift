@@ -1,10 +1,5 @@
 import Foundation
 
-public protocol TypedPredicateProtocol { associatedtype Root }
-
-public class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
-public class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
-
 public func &&<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> CompoundPredicate<TP1.Root> where TP1.Root == TP2.Root {
     return CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
@@ -15,19 +10,6 @@ public func ||<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & Typ
 
 public prefix func !<TP: NSPredicate & TypedPredicateProtocol>(p: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .not, subpredicates: [p])
-}
-
-public extension KeyPath {
-    func predicate(_ op: NSComparisonPredicate.Operator, _ value: Value) -> ComparisonPredicate<Root> {
-        let ex1 = NSExpression(forKeyPath: self)
-        let ex2 = NSExpression(forConstantValue: value)
-        return ComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
-    }
-    func predicate<T: Sequence>(_ op: NSComparisonPredicate.Operator, _ values: T) -> ComparisonPredicate<Root> where T.Element == Value {
-        let ex1 = NSExpression(forKeyPath: self)
-        let ex2 = NSExpression(forConstantValue: values)
-        return ComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
-    }
 }
 
 public func ==<E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> ComparisonPredicate<R> {
