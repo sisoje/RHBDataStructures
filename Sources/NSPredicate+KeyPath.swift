@@ -6,6 +6,7 @@ public extension KeyPath {
         let ex2 = NSExpression(forConstantValue: value)
         return ComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
     }
+    
     func predicate<T: Sequence>(_ op: NSComparisonPredicate.Operator, _ values: T) -> ComparisonPredicate<Root> where T.Element == Value {
         let ex1 = NSExpression(forKeyPath: self)
         let ex2 = NSExpression(forConstantValue: values)
