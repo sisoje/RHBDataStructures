@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
     s.documentation_url = "https://raw.githubusercontent.com/sisoje/#{s.name}/master/README.md"
 
     s.swift_version = '5.0'
-    s.platforms = { :ios => "11.0", :watchos => "3.0", :tvos => "10.0", :osx => "10.12" }
+    s.platforms = { :ios => "10.3", :watchos => "3.0", :tvos => "10.0", :osx => "10.12" }
     s.source_files = 'Sources/**/*'
 end
