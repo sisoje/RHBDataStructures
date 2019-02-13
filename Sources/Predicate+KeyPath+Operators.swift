@@ -1,5 +1,25 @@
 import Foundation
 
+public protocol TypedPredicateProtocol { associatedtype Root }
+public class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
+public class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
+
+public extension KeyPath {
+    internal func unconstraindedPredicate(_ op: NSComparisonPredicate.Operator, _ value: Any?) -> ComparisonPredicate<Root> {
+        let ex1 = NSExpression(forKeyPath: self)
+        let ex2 = NSExpression(forConstantValue: value)
+        return ComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
+    }
+
+    func predicate(_ op: NSComparisonPredicate.Operator, _ value: Value) -> ComparisonPredicate<Root> {
+        return unconstraindedPredicate(op, value)
+    }
+
+    func predicate<T: Sequence>(_ op: NSComparisonPredicate.Operator, _ values: T) -> ComparisonPredicate<Root> where T.Element == Value {
+        return unconstraindedPredicate(op, values)
+    }
+}
+
 public func &&<TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> CompoundPredicate<TP1.Root> where TP1.Root == TP2.Root {
     return CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
