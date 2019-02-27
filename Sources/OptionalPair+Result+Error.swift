@@ -59,23 +59,18 @@ public extension OptionalPair {
     }
 }
 
-public extension OptionalPair where T2 == Error {
-    var asResult: Result<T1, Error> {
-        switch self {
-        case .both(let r, let e):
-            return .failure(ErrorWithInfo(e, r))
-        case .first(let r):
-            return .success(r)
-        case .second(let e):
-            return .failure(e)
-        case .none:
-            return .failure("no result, no error")
-        }
-    }
-}
-
 public extension Result where Failure == Error {
-    init(_ s: Success?, _ f: Error?) {
-        self = OptionalPair(s, f).asResult
+    init(_ result: Success?, _ error: Error?) {
+        let pair = OptionalPair(result, error)
+        switch pair {
+        case .both(let result, let error):
+            self = .failure(ErrorWithInfo(error, result))
+        case .first(let result):
+            self = .success(result)
+        case .second(let error):
+            self = .failure(error)
+        case .none:
+            self = .failure("no result, no error")
+        }
     }
 }
