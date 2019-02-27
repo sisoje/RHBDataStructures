@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "RHBFoundation",
     platforms: [
-        .macOS(.v10_13), .iOS(.v12)
+        .macOS(.v10_13), .iOS(.v10_3)
     ],
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
@@ -25,5 +25,9 @@ let package = Package(
             name: "RHBFoundation",
             dependencies: [],
             path: "Sources"),
+        .testTarget(
+            name: "Tests",
+            dependencies: ["RHBFoundation"],
+            psth: "Tests"),
         ]
 )
