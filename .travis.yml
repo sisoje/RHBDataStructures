@@ -3,7 +3,7 @@ os:
 osx_image: xcode10.2
 language: swift
 script:
-  - swift build
+  - swift test
 notifications:
   email:
     on_success: change
