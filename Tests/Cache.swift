@@ -1,20 +1,20 @@
 import XCTest
 import RHBFoundation
 
-final class UIKitTests: XCTestCase {
-    func testAlert() {
-        let ci = Cache<Int, NSString>()
-        ci[5] = "a"
-        XCTAssert(ci[5] == "a")
-        ci[5] = nil
-        XCTAssertNil(ci[5])
+final class CacheTests: XCTestCase {
+    func testCacheByInt() {
+        let cache = Cache<Int, NSString>()
+        cache[5] = "a"
+        XCTAssert(cache[5] == "a")
+        cache[5] = nil
+        XCTAssertNil(cache[5])
     }
 
-    func testAlert2() {
-        let ci = Cache<String, NSString>()
-        ci["5"] = "a"
-        XCTAssert(ci["5"] == "a")
-        ci["5"] = nil
-        XCTAssertNil(ci["5"])
+    func testCacheByString() {
+        let cache = Cache<String, NSString>()
+        cache["5"] = "a"
+        XCTAssert(cache["5"] == "a")
+        cache["5"] = nil
+        XCTAssertNil(cache["5"])
     }
 }
