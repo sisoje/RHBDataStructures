@@ -2,22 +2,25 @@ import XCTest
 import RHBFoundation
 
 final class DeinitBlockTests: XCTestCase {
-    func testBlockDeinitBlock() {
+    func testDeinitBlock() {
         var t = 0
-        _ = {
+        _ = DeinitBlock {
             XCTAssert(t == 0)
-            _ = DeinitBlock { t = 1 }
-        }()
+            t = 1
+        }
         XCTAssert(t == 1)
     }
 
-    func testBlockDeinitBlockArray() {
+    func testDeinitBlock2() {
         var t = 0
-        _ = {
+        var d: DeinitBlock? = DeinitBlock {
             XCTAssert(t == 0)
-            var m: [DeinitBlock] = []
-            m.append ( DeinitBlock { t = 1 } )
-        }()
+            t = 1
+        }
+        XCTAssert(t == 0)
+        d?.noop()
+        XCTAssert(t == 0)
+        d = nil
         XCTAssert(t == 1)
     }
 

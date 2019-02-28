@@ -26,7 +26,7 @@ let package = Package(
             dependencies: [],
             path: "Sources"),
         .testTarget(
-            name: "Tests",
+            name: "RHBFoundationTests",
             dependencies: ["RHBFoundation"],
             path: "Tests"),
         ]
