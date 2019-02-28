@@ -1,7 +1,7 @@
 import XCTest
 import RHBFoundation
 
-final class MutationOperatorsTests: XCTestCase {
+final class MutationOperatorTests: XCTestCase {
     func testObjects() {
         let arr = NSMutableArray() ~ { $0.add(NSObject()) }
         XCTAssert(arr.count == 1)
