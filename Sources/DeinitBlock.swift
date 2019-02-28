@@ -31,8 +31,8 @@ public extension NotificationCenter {
 
 public extension Timer {
     var invalidation: DeinitBlock {
-        return DeinitBlock { [weak self] in
-            self?.invalidate()
+        return DeinitBlock {
+            self.invalidate()
         }
     }
 }

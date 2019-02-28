@@ -38,4 +38,25 @@ final class DeinitBlockTests: XCTestCase {
         }
         self.waitForExpectations(timeout: 1, handler: nil)
     }
+
+    func testTimer() {
+        let tick = 0.001
+        var x = 0
+        let timer = Timer.scheduledTimer(withTimeInterval: tick, repeats: true) { _ in
+            x += 1
+        }
+        autoreleasepool {
+            let ex = expectation(description: #function)
+            let invalidation = timer.invalidation
+            DispatchQueue.global().asyncAfter(deadline: .now()+tick*2) {
+                invalidation.noop()
+                ex.fulfill()
+            }
+        }
+        waitForExpectations(timeout: 1) { error in
+            XCTAssertNil(error)
+            XCTAssert(!timer.isValid)
+            XCTAssert(x > 0)
+        }
+    }
 }
