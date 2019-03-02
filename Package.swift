@@ -14,8 +14,8 @@ let package = Package(
             name: "RHBFoundation",
             targets: ["RHBFoundation"]),
         .library(
-            name: "RHBFoundationTests",
-            targets: ["RHBFoundationTests"]),
+            name: "RHBFoundationTestUtilities",
+            targets: ["RHBFoundationTestUtilities"]),
         ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -28,9 +28,13 @@ let package = Package(
             name: "RHBFoundation",
             dependencies: [],
             path: "Sources"),
+        .target(
+            name: "RHBFoundationTestUtilities",
+            dependencies: ["RHBFoundation"],
+            path: "TestUtilities"),
         .testTarget(
             name: "RHBFoundationTests",
-            dependencies: ["RHBFoundation"],
+            dependencies: ["RHBFoundation", "RHBFoundationTestUtilities"],
             path: "Tests"),
         ]
 )

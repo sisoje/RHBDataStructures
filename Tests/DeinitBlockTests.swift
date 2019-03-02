@@ -1,5 +1,6 @@
 import XCTest
 import RHBFoundation
+import RHBFoundationTestUtilities
 
 final class DeinitBlockTests: XCTestCase {
     func testDeinitBlock() {
