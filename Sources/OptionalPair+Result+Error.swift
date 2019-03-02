@@ -38,7 +38,7 @@ public extension OptionalPair {
 
     var first: T1? {
         switch self {
-        case .first(let t1):
+        case let .first(t1):
             return t1
         case .both(let t1, _):
             return t1
@@ -49,9 +49,9 @@ public extension OptionalPair {
 
     var second: T2? {
         switch self {
-        case .second(let t2):
+        case let .second(t2):
             return t2
-        case .both(_, let t2):
+        case let .both(_, t2):
             return t2
         default:
             return nil
@@ -63,11 +63,11 @@ public extension Result where Failure == Error {
     init(_ result: Success?, _ error: Error?) {
         let pair = OptionalPair(result, error)
         switch pair {
-        case .both(let result, let error):
+        case let .both(result, error):
             self = .failure(ErrorWithInfo(error, result))
-        case .first(let result):
+        case let .first(result):
             self = .success(result)
-        case .second(let error):
+        case let .second(error):
             self = .failure(error)
         case .none:
             self = .failure("no result, no error")

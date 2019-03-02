@@ -1,18 +1,18 @@
-import XCTest
 import RHBFoundation
+import XCTest
 
 final class IfBlockTests: XCTestCase {
     func testIfDebug() {
         let ex = expectation(description: "expect debug")
         IfBlock.debug.yes {
             #if !DEBUG
-            XCTFail()
+                XCTFail()
             #endif
             ex.fulfill()
         }
         IfBlock.debug.no {
             #if DEBUG
-            XCTFail()
+                XCTFail()
             #endif
             ex.fulfill()
         }
@@ -36,13 +36,13 @@ final class IfBlockTests: XCTestCase {
         let ex = expectation(description: "expect macos")
         IfBlock.macos.yes {
             #if !os(macOS)
-            XCTFail()
+                XCTFail()
             #endif
             ex.fulfill()
         }
         IfBlock.macos.no {
             #if os(macOS)
-            XCTFail()
+                XCTFail()
             #endif
             ex.fulfill()
         }
@@ -53,13 +53,13 @@ final class IfBlockTests: XCTestCase {
         let ex = expectation(description: "expect ios")
         IfBlock.ios.yes {
             #if !os(iOS)
-            XCTFail()
+                XCTFail()
             #endif
             ex.fulfill()
         }
         IfBlock.ios.no {
             #if os(iOS)
-            XCTFail()
+                XCTFail()
             #endif
             ex.fulfill()
         }

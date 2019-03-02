@@ -6,17 +6,19 @@ import PackageDescription
 let package = Package(
     name: "RHBFoundation",
     platforms: [
-        .macOS(.v10_12), .iOS("10.3")
+        .macOS(.v10_12), .iOS("10.3"),
     ],
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "RHBFoundation",
-            targets: ["RHBFoundation"]),
+            targets: ["RHBFoundation"]
+        ),
         .library(
             name: "RHBFoundationTestUtilities",
-            targets: ["RHBFoundationTestUtilities"]),
-        ],
+            targets: ["RHBFoundationTestUtilities"]
+        ),
+    ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
@@ -27,14 +29,17 @@ let package = Package(
         .target(
             name: "RHBFoundation",
             dependencies: [],
-            path: "Sources"),
+            path: "Sources"
+        ),
         .target(
             name: "RHBFoundationTestUtilities",
             dependencies: ["RHBFoundation"],
-            path: "TestUtilities"),
+            path: "TestUtilities"
+        ),
         .testTarget(
             name: "RHBFoundationTests",
             dependencies: ["RHBFoundation", "RHBFoundationTestUtilities"],
-            path: "Tests"),
-        ]
+            path: "Tests"
+        ),
+    ]
 )

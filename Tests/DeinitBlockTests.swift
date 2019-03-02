@@ -1,6 +1,6 @@
-import XCTest
 import RHBFoundation
 import RHBFoundationTestUtilities
+import XCTest
 
 final class DeinitBlockTests: XCTestCase {
     func testDeinitBlock() {
@@ -27,7 +27,7 @@ final class DeinitBlockTests: XCTestCase {
 
     func testNotificationCenter() {
         let notificationName = NSNotification.Name("testNotificationCenter")
-        let exp = self.expectation(description: notificationName.rawValue)
+        let exp = expectation(description: notificationName.rawValue)
         var rm: DeinitBlock?
         rm = NotificationCenter.default.addSmartObserver(name: notificationName) { _ in
             XCTAssertNotNil(rm)
@@ -37,7 +37,7 @@ final class DeinitBlockTests: XCTestCase {
         OperationQueue().addOperation {
             NotificationCenter.default.post(name: notificationName, object: nil)
         }
-        self.waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testTimer() {
@@ -49,7 +49,7 @@ final class DeinitBlockTests: XCTestCase {
         autoreleasepool {
             let ex = expectation(description: #function)
             let invalidation = timer.invalidation
-            DispatchQueue.global().asyncAfter(deadline: .now()+tick*2) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + tick * 2) {
                 invalidation.noop()
                 ex.fulfill()
             }

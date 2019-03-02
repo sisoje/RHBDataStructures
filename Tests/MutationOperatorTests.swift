@@ -1,5 +1,5 @@
-import XCTest
 import RHBFoundation
+import XCTest
 
 final class MutationOperatorTests: XCTestCase {
     func testObjects() {

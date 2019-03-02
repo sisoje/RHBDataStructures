@@ -2,7 +2,7 @@ import Foundation
 
 open class Cache<H: Hashable, V: AnyObject> {
     public let cache = NSCache<AnyObject, V>()
-    
+
     public init() {}
 }
 

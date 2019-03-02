@@ -5,6 +5,7 @@ public class DeinitBlock {
     public init(_ block: @escaping () -> Void) {
         onDeinit = block
     }
+
     deinit {
         onDeinit()
     }
@@ -43,6 +44,7 @@ public extension URLSessionDataTask {
             self?.cancel()
         }
     }
+
     var runner: DeinitBlock {
         resume()
         return cancellation

@@ -1,5 +1,5 @@
-import XCTest
 import RHBFoundation
+import XCTest
 
 public extension XCTestExpectation {
     var fulfiller: DeinitBlock {

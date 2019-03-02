@@ -3,7 +3,7 @@ import Foundation
 public struct IfBlock {
     let conditionBlock: () -> Bool
     public init(_ block: @escaping () -> Bool) {
-        self.conditionBlock = block
+        conditionBlock = block
     }
 }
 
@@ -13,6 +13,7 @@ public extension IfBlock {
             block()
         }
     }
+
     func no(_ block: () -> Void) {
         if !conditionBlock() {
             block()
@@ -23,29 +24,29 @@ public extension IfBlock {
 public extension IfBlock {
     static let debug = IfBlock {
         #if DEBUG
-        return true
+            return true
         #else
-        return false
+            return false
         #endif
     }
 
     static let simulator = IfBlock {
-        return TARGET_OS_SIMULATOR != 0
+        TARGET_OS_SIMULATOR != 0
     }
 
     static let macos = IfBlock {
         #if os(macOS)
-        return true
+            return true
         #else
-        return false
+            return false
         #endif
     }
 
     static let ios = IfBlock {
         #if os(iOS)
-        return true
+            return true
         #else
-        return false
+            return false
         #endif
     }
 }
