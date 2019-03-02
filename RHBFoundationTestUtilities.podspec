@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-    s.name             = 'RHBFoundation'
+    s.name             = 'RHBFoundationTestUtilities'
     s.version          = '2.0.0'
     s.summary          = 'Basic structures, algorithms, extensions, patterns, operators...'
 
@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
     RHBFoundation are some basic structures, algorithms, extensions, patterns, operators... for doing some basic tricks.
                        DESC
 
-    s.homepage         = "https://github.com/sisoje/#{s.name}"
+    s.homepage         = "https://github.com/sisoje/RHBFoundation"
     s.license          = { :type => 'MIT', :file => 'LICENSE' }
     s.author           = { 'Lazar Otasevic' => 'redhotbits@gmail.com' }
     s.source           = { :git => "https://github.com/sisoje/#{s.name}.git", :tag => s.version.to_s }
@@ -16,10 +16,7 @@ Pod::Spec.new do |s|
 
     s.swift_version = '5.0'
     s.platforms = { :ios => "10.3", :watchos => "3.0", :tvos => "10.0", :osx => "10.12" }
-    s.source_files = 'Sources/**/*'
-    s.test_spec 'RHBFoundationTests' do |test_spec|
-        test_spec.dependency 'RHBFoundationTestUtilities'
-        test_spec.requires_app_host = false
-        test_spec.source_files = 'Tests/**/*'
-    end
+    s.source_files = 'TestUtilities/**/*'
+    s.frameworks = 'XCTest'
+    s.dependency 'RHBFoundation'
 end
