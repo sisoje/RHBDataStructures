@@ -59,4 +59,14 @@ final class DeinitBlockTests: XCTestCase {
             XCTAssert(x > 0)
         }
     }
+
+    func testExpectationFulfiller() {
+        autoreleasepool {
+            let filfiller = expectation(description: #function).fulfiller
+            DispatchQueue.global().async {
+                filfiller.noop()
+            }
+        }
+        waitForExpectations(timeout: 1, handler: nil)
+    }
 }

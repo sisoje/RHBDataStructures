@@ -13,6 +13,9 @@ let package = Package(
         .library(
             name: "RHBFoundation",
             targets: ["RHBFoundation"]),
+        .library(
+            name: "RHBFoundationTests",
+            targets: ["RHBFoundationTests"]),
         ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
