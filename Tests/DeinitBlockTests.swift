@@ -61,11 +61,25 @@ final class DeinitBlockTests: XCTestCase {
         }
     }
 
-    func testExpectationFulfiller() {
-        autoreleasepool {
-            let filfiller = expectation(description: #function).fulfiller
-            DispatchQueue.global().async {
-                filfiller.noop()
+    func testFulfillWithDispatch() {
+        let queue = DispatchQueue(label: #function)
+        (0 ..< 3).forEach { index in
+            let fulfiller = expectation(description: "\(#function) \(index)").fulfiller
+            queue.async {
+                fulfiller.noop()
+            }
+        }
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func testFulfillWithOperation() {
+        let queue = OperationQueue()
+        (0 ..< 3).forEach { index in
+            let fulfiller = expectation(description: "\(#function) \(index)").fulfiller
+            autoreleasepool {
+                queue.addOperation {
+                    fulfiller.noop()
+                }
             }
         }
         waitForExpectations(timeout: 1, handler: nil)
