@@ -66,24 +66,6 @@ class TestSession {
     }
 }
 
-class FillfilerTests: XCTestCase {
-    func testFulfillWithDispatchQueue() {
-        let queue = DispatchQueue(label: #function)
-        (0 ..< 10).forEach { index in
-            let fulfiller = expectation(description: "\(#function) \(index)").fulfiller
-            if index.isMultiple(of: 2) {
-                // not retained -> automatically fulfilled
-                return
-            }
-            queue.async {
-                // fullfiled when closure is released
-                print("Retaining: \(fulfiller)")
-            }
-        }
-        waitForExpectations(timeout: 1, handler: nil)
-    }
-}
-
 final class ImageCacheTests: XCTestCase {
     var deiniters: [Any] = []
     var session: TestSession!
