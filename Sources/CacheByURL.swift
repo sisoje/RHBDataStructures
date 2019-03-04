@@ -1,5 +1,4 @@
-import UIKit
-import RHBFoundation
+import Foundation
 
 public class CacheByURL<T: AnyObject>: Cache<URL, T> {
     let taskCompletionManager: TaskCompletionManager<URL, T>
