@@ -1,5 +1,4 @@
 import Foundation
-import RHBFoundation
 
 public typealias DataTaskCompletionBlock = (Data?, URLResponse?, Error?) -> Void
 public typealias DataTaskData = OptionalPair<Data, URLResponse>
