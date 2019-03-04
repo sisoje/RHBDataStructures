@@ -41,7 +41,7 @@ final class DeinitBlockTests: XCTestCase {
     }
 
     func testTimer() {
-        let tick = 0.001
+        let tick = 0.1
         var x = 0
         let timer = Timer.scheduledTimer(withTimeInterval: tick, repeats: true) { _ in
             x += 1
