@@ -66,7 +66,7 @@ class TestSession {
     }
 }
 
-final class ImageCacheTests: XCTestCase {
+final class TaskCompletionManagerTests: XCTestCase {
     var deiniters: [Any] = []
     var session: TestSession!
 
