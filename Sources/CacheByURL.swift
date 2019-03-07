@@ -2,7 +2,7 @@ import Foundation
 
 public class CacheByURL<T: AnyObject>: Cache<URL, T> {
     let taskCompletionManager: TaskCompletionManager<URL, T>
-    init(taskCompletionManager: TaskCompletionManager<URL, T>) {
+    public init(taskCompletionManager: TaskCompletionManager<URL, T>) {
         self.taskCompletionManager = taskCompletionManager
     }
 }
