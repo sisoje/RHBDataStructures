@@ -6,7 +6,7 @@ public class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtoc
 
 public extension KeyPath {
     internal func unconstraindedPredicate(_ op: NSComparisonPredicate.Operator, _ value: Any?) -> ComparisonPredicate<Root> {
-        let ex1 = NSExpression(forKeyPath: self)
+        let ex1 = self == \Root.self ? NSExpression(format: "self") : NSExpression(forKeyPath: self)
         let ex2 = NSExpression(forConstantValue: value)
         return ComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
     }
