@@ -1,11 +1,15 @@
 import Foundation
 
 open class CompletionManager<K: Hashable, T> {
-    public var taskRunnerCreator: ((K) -> DeinitBlock)!
-    var completionGroups: [K: (DeinitBlock, [UUID: (T) -> Void])] = [:]
+    public var createTask: ((K, @escaping (T)->Void) -> Any)!
+    var completionGroups: [K: (Any, [UUID: (T) -> Void])] = [:]
+    let queue: DispatchQueue
+    public init(queue: DispatchQueue = .main) {
+        self.queue = queue
+    }
 }
 
-extension CompletionManager {
+private extension CompletionManager {
     func removeCompletion(_ key: K, _ uuid: UUID) {
         guard let pair = completionGroups[key] else {
             return
@@ -21,27 +25,35 @@ extension CompletionManager {
 
     func addCompletion(_ key: K, _ completion: @escaping (T)->Void) -> UUID {
         let pair = completionGroups[key]
-        let deiniter = pair?.0 ?? taskRunnerCreator(key)
+        let sharedTask = pair?.0 ?? createTask(key) { [weak self] result in
+            self?.finish(key, result)
+        }
         var dic = pair?.1 ?? [:]
         let uuid = UUID()
         dic[uuid] = completion
-        completionGroups[key] = (deiniter, dic)
+        completionGroups[key] = (sharedTask, dic)
         return uuid
+    }
+
+    func finish(_ key: K, _ result: T) {
+        queue.sync {
+            completionGroups[key]?.1.forEach { _, value in
+                value(result)
+            }
+            completionGroups.removeValue(forKey: key)
+        }
     }
 }
 
 public extension CompletionManager {
-    func finish(_ key: K, _ result: T) {
-        completionGroups[key]?.1.forEach {
-            $1(result)
+    func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
+        let uuid = queue.sync {
+            return addCompletion(key, completion)
         }
-        completionGroups.removeValue(forKey: key)
-    }
-
-    func manageCompletion(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
-        let uuid = addCompletion(key, completion)
         return DeinitBlock { [weak self] in
-            self?.removeCompletion(key, uuid)
+            self?.queue.sync {
+                self?.removeCompletion(key, uuid)
+            }
         }
     }
 }
