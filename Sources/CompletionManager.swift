@@ -1,5 +1,14 @@
 import Foundation
 
+extension DispatchQueue {
+    func mysync<T>(_ block: ()->T) -> T {
+        guard self == .main, Thread.isMainThread else {
+            return sync(execute: block)
+        }
+        return block()
+    }
+}
+
 open class CompletionManager<K: Hashable, T> {
     public var createTask: ((K, @escaping (T)->Void) -> Any)!
     var completionGroups: [K: (Any, [UUID: (T) -> Void])] = [:]
@@ -36,7 +45,7 @@ private extension CompletionManager {
     }
 
     func finish(_ key: K, _ result: T) {
-        queue.sync {
+        queue.mysync {
             completionGroups[key]?.1.forEach { _, value in
                 value(result)
             }
@@ -47,11 +56,11 @@ private extension CompletionManager {
 
 public extension CompletionManager {
     func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
-        let uuid = queue.sync {
+        let uuid = queue.mysync {
             return addCompletion(key, completion)
         }
         return DeinitBlock { [weak self] in
-            self?.queue.sync {
+            self?.queue.mysync {
                 self?.removeCompletion(key, uuid)
             }
         }

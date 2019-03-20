@@ -14,7 +14,7 @@ let errors: [Error?] = [
 ]
 
 let combined: [(Data?, Error?)] = (0..<datas.count*errors.count).map {
-    (datas[$0 / errors.count], errors[$0 % errors.count])
+    return (datas[$0 / errors.count], errors[$0 % errors.count])
 }
 
 final class TaskCompletionManagerTests: XCTestCase {
@@ -25,7 +25,7 @@ final class TaskCompletionManagerTests: XCTestCase {
         zip(urls, jsons).forEach {
             try! $0.1.data(using: .utf8)!.write(to: $0.0)
         }
-        let manager: CompletionManager<Int, Result<[Int:String], Error>> = CompletionManager(queue: DispatchQueue(label: #function))
+        let manager: CompletionManager<Int, Result<[Int:String], Error>> = CompletionManager()
         manager.createTask = { index, completion in
             let url = urls[index]
             let task = URLSession(configuration: .default).dataTask(with: url) { data,_,error in
@@ -59,7 +59,7 @@ final class TaskCompletionManagerTests: XCTestCase {
 
     func testAllCombinations() {
         var totaltasks = 0
-        let manager: CompletionManager<Int, Result<String, Error>> = CompletionManager(queue: DispatchQueue(label: #function))
+        let manager: CompletionManager<Int, Result<String, Error>> = CompletionManager()
         manager.createTask = { index, completion in
             totaltasks += 1
             let token = NSObject()
