@@ -1,7 +1,7 @@
 import Foundation
 
 extension DispatchQueue {
-    func mysync<T>(_ block: ()->T) -> T {
+    func mainSync<T>(_ block: ()->T) -> T {
         guard self == .main, Thread.isMainThread else {
             return sync(execute: block)
         }
@@ -45,7 +45,7 @@ private extension CompletionManager {
     }
 
     func finish(_ key: K, _ result: T) {
-        queue.mysync {
+        queue.mainSync {
             completionGroups[key]?.1.forEach { _, value in
                 value(result)
             }
@@ -56,11 +56,11 @@ private extension CompletionManager {
 
 public extension CompletionManager {
     func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
-        let uuid = queue.mysync {
+        let uuid = queue.mainSync {
             return addCompletion(key, completion)
         }
         return DeinitBlock { [weak self] in
-            self?.queue.mysync {
+            self?.queue.mainSync {
                 self?.removeCompletion(key, uuid)
             }
         }
