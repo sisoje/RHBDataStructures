@@ -1,6 +1,6 @@
 import Foundation
 
-open class CompletionManager<K: Hashable, T> {
+open class SharedTaskManager<K: Hashable, T> {
     public var createTask: ((K, @escaping (T)->Void) -> Any)!
     var completionGroups: [K: (Any, [UUID: (T) -> Void])] = [:]
     let queue: DispatchQueue
@@ -9,7 +9,7 @@ open class CompletionManager<K: Hashable, T> {
     }
 }
 
-private extension CompletionManager {
+extension SharedTaskManager {
     func removeCompletion(_ key: K, _ uuid: UUID) {
         guard let pair = completionGroups[key] else {
             return
@@ -45,7 +45,7 @@ private extension CompletionManager {
     }
 }
 
-public extension CompletionManager {
+public extension SharedTaskManager {
     func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
         let uuid = queue.mainSync {
             return addCompletion(key, completion)

@@ -23,13 +23,13 @@ public extension Result where Failure == Error {
 }
 
 public extension Result {
-    static func failureEmpty<T>() -> Result<T, Error> {
-        return .failure(NSError(domain: #function, code: 0, userInfo: nil))
+    static func failureEmpty<T>(domain: String = #function) -> Result<T, Error> {
+        return .failure(NSError(domain: domain, code: 0, userInfo: nil))
     }
 
-    static func failureWithValueAndError<T, V>(_ value: V, _ error: Error) -> Result<T, Error> {
+    static func failureWithValueAndError<T, V>(_ value: V, _ error: Error, domain: String = #function) -> Result<T, Error> {
         return .failure(NSError(
-            domain: #function,
+            domain: domain,
             code: 0,
             userInfo: [
                 "value": value,
@@ -38,9 +38,9 @@ public extension Result {
         )
     }
 
-    static func failureWithValue<T, V>(_ value: V) -> Result<T, Error> {
+    static func failureWithValue<T, V>(_ value: V, domain: String = #function) -> Result<T, Error> {
         return .failure(NSError(
-            domain: #function,
+            domain: domain,
             code: 0,
             userInfo: [
                 "value": value

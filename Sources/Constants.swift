@@ -17,3 +17,11 @@ public extension URL {
 public extension UserDefaults {
     static let applicationGroup = UserDefaults(suiteName: .applicationGroupIdentifier)!
 }
+
+public extension URLSession {
+    static let returnCacheDataElseLoadSession = URLSession(
+        configuration: .default ~ {
+            $0.requestCachePolicy = .returnCacheDataElseLoad
+        }
+    )
+}
