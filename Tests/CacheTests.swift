@@ -17,4 +17,12 @@ final class CacheTests: XCTestCase {
         cache["5"] = nil
         XCTAssertNil(cache["5"])
     }
+
+    func testRemoveAll() {
+        let cache = Cache<Int, NSString>()
+        cache[5] = "a"
+        XCTAssert(cache[5] == "a")
+        cache.removeAllObjects()
+        XCTAssertNil(cache[5])
+    }
 }
