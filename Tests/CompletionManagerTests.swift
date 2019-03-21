@@ -13,8 +13,8 @@ let errors: [Error?] = [
     nil,
 ]
 
-let combined: [(Data?, Error?)] = (0..<datas.count*errors.count).map {
-    return (datas[$0 / errors.count], errors[$0 % errors.count])
+let combined: [(Data?, Error?)] = (0..<datas.count*errors.count).map { (index: Int) in
+    return (datas[index / errors.count], errors[index % errors.count])
 }
 
 final class TaskCompletionManagerTests: XCTestCase {
