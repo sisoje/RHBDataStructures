@@ -1,9 +1,12 @@
 import Foundation
 
 public enum ErrorWithValue<T>: Error {
-    case empty
     case value(T)
     case valueAnderror(T, Error)
+}
+
+public enum EmptyError: Error {
+    case empty
 }
 
 public extension Result where Failure == Error {
@@ -37,6 +40,6 @@ public extension Result where Failure == Error {
         if let error = error {
             return .failure(error)
         }
-        return .failure(ErrorWithValue<Success>.empty)
+        return .failure(EmptyError.empty)
     }
 }
