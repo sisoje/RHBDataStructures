@@ -1,19 +1,19 @@
 import Foundation
 
-public extension Result where Failure == Error {
-    enum ErrorWithInfo: Error {
-        case empty
-        case value(Any)
-        case valueAnderror(Any, Error)
-    }
+public enum ErrorWithValue<T>: Error {
+    case empty
+    case value(T)
+    case valueAnderror(T, Error)
+}
 
+public extension Result where Failure == Error {
     init(_ value: Success?, _ error: Error?) {
         self = .createResult(value, error)
     }
 
     func mapOptional<NewSuccess>(_ transform: (Success) -> NewSuccess?) -> Result<NewSuccess, Error> {
         return flatMap {
-            transform($0).map { .success($0) } ?? .failureWithInfo(.value($0))
+            transform($0).map { .success($0) } ?? .failure(ErrorWithValue.value($0))
         }
     }
 
@@ -22,14 +22,14 @@ public extension Result where Failure == Error {
             do {
                 return .success(try transform($0))
             } catch {
-                return .failureWithInfo(.valueAnderror($0, error))
+                return .failure(ErrorWithValue.valueAnderror($0, error))
             }
         }
     }
 
     static func createResult(_ value: Success?, _ error: Error?) -> Result<Success, Error> {
         if let value = value, let error = error {
-            return .failureWithInfo(.valueAnderror(value, error))
+            return .failure(ErrorWithValue.valueAnderror(value, error))
         }
         if let value = value {
             return .success(value)
@@ -37,10 +37,6 @@ public extension Result where Failure == Error {
         if let error = error {
             return .failure(error)
         }
-        return .failureWithInfo(.empty)
-    }
-
-    static func failureWithInfo(_ error: ErrorWithInfo) -> Result<Success, Error> {
-        return .failure(error)
+        return .failure(ErrorWithValue<Success>.empty)
     }
 }
