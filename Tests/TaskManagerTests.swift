@@ -29,7 +29,7 @@ final class TaskManagerTests: XCTestCase {
         manager.createTask = { index, completion in
             let url = urls[index]
             let task = URLSession(configuration: .default).dataTask(with: url) { data,_,error in
-                let result = Result(data, error).railMap {
+                let result = Result(data, error).mapThrowable {
                     try JSONDecoder().decode([Int:String].self, from: $0)
                 }
                 completion(result)
@@ -66,7 +66,7 @@ final class TaskManagerTests: XCTestCase {
             DispatchQueue.global().asyncAfter(deadline: .now()+0.5) { [weak token] in
                 token.map { _ in
                     let comb = combined[index]
-                    let result = Result(comb.0, comb.1).railMap {
+                    let result = Result(comb.0, comb.1).mapOptional {
                         String(data: $0, encoding: .utf8)
                     }
                     completion(result)
