@@ -23,11 +23,9 @@ public extension IfBlock {
 
 public extension IfBlock {
     static let debug = IfBlock {
-        #if DEBUG
-            return true
-        #else
-            return false
-        #endif
+        var b: Bool = false
+        assert({b = true}() == {}())
+        return b
     }
 
     static let simulator = IfBlock {

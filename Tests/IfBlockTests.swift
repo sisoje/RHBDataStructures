@@ -5,15 +5,10 @@ final class IfBlockTests: XCTestCase {
     func testIfDebug() {
         let ex = expectation(description: "expect debug")
         IfBlock.debug.yes {
-            #if !DEBUG
-                XCTFail()
-            #endif
-            ex.fulfill()
+            assert({ ex.fulfill() }() == {}())
         }
         IfBlock.debug.no {
-            #if DEBUG
-                XCTFail()
-            #endif
+            assert({ XCTFail() }() == {}())
             ex.fulfill()
         }
         waitForExpectations(timeout: 1, handler: nil)
