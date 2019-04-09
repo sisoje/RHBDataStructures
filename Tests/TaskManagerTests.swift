@@ -1,102 +1,73 @@
 import RHBFoundation
 import XCTest
-import RHBFoundationTestUtilities
-
-let datas: [Data?] = [
-    "hello".data(using: .utf8)!,
-    Data(repeating: 255, count: 10),
-    nil,
-]
-
-let errors: [Error?] = [
-    NSError(domain: "", code: 0, userInfo: nil),
-    nil,
-]
-
-let combined: [(Data?, Error?)] = (0..<datas.count*errors.count).map { (index: Int) in
-    return (datas[index / errors.count], errors[index % errors.count])
-}
 
 final class TaskManagerTests: XCTestCase {
-    func testJsons() {
-        let N = 10
-        let jsons = (0..<N).map { "{\"\($0)\":\"\($0)\"}" }
-        let urls = (0..<N).map { URL.temporary.appendingPathComponent("\($0)") }
-        zip(urls, jsons).forEach {
-            try! $0.1.data(using: .utf8)!.write(to: $0.0)
+    func testUrls() {
+        let indexes = Array((0..<3))
+        let datas: [Data] = indexes.map { _ in UUID().uuidString.data(using: .utf8)! }
+        let urls: [URL] = datas.map {
+            let url = URL.temporary.appendingPathComponent(UUID().uuidString)
+            try! $0.write(to: url)
+            return url
         }
-        let manager: SharedTaskManager<Int, Result<[Int:String], Error>> = SharedTaskManager()
+        let taskExpectations = indexes.map { expectation(description: "Task expectation for index: \($0)") }
+        let manager: SharedTaskManager<Int, Data?> = SharedTaskManager()
         manager.createTask = { index, completion in
             let url = urls[index]
-            let task = URLSession(configuration: .default).dataTask(with: url) { data,_,error in
-                let result = Result(data, error).mapThrowable {
-                    try JSONDecoder().decode([Int:String].self, from: $0)
-                }
-                completion(result)
+            let task = URLSession(configuration: .default).dataTask(with: url) { data, _, _ in
+                completion(data)
+                taskExpectations[index].fulfill()
             }
             return task.runner
         }
-
-        var completedCount = 0
-        let amountToCancel = 3
-        var taskRunners: [Any] = []
-        (0 ..< N).forEach { index in
-            let ex = expectation(description: String(index)).fulfiller
-            let task = manager.sharedTask(index) { result in
-                let dic = try! result.get()
-                XCTAssert(dic[index] == "\(index)")
-                completedCount += 1
-                ex.noop()
+        var tasks: [DeinitBlock] = (indexes + indexes).enumerated().map { completionIndex, taskIndex in
+            let exp = expectation(description: "Completion expectation for : \(completionIndex)")
+            return manager.sharedTask(taskIndex) { result in
+                XCTAssert(datas[taskIndex] == result)
+                exp.fulfill()
             }
-            taskRunners.append(task)
         }
-        taskRunners = Array(taskRunners.suffix(from: amountToCancel))
-        waitForExpectations(timeout: 3) { error in
-            XCTAssertNil(error)
-            XCTAssert(completedCount == N - amountToCancel)
-        }
+        tasks.reverse()
+        waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func testAllCombinations() {
-        var totaltasks = 0
-        let manager: SharedTaskManager<Int, Result<String, Error>> = SharedTaskManager()
+    func testTwoCompletionsPerTask() {
+        let indexes = Array((0..<10))
+        let taskExpectations = indexes.map { expectation(description: "Task expectation for index: \($0)") }
+        let manager: SharedTaskManager<Int, Void> = SharedTaskManager()
         manager.createTask = { index, completion in
-            totaltasks += 1
-            let token = NSObject()
-            DispatchQueue.global().asyncAfter(deadline: .now()+0.5) { [weak token] in
-                token.map { _ in
-                    let comb = combined[index]
-                    let result = Result(comb.0, comb.1).mapOptional {
-                        String(data: $0, encoding: .utf8)
-                    }
-                    completion(result)
-                }
-            }
-            return token
-        }
-        let N = 3
-        var totalcompletions = 0
-        var sucesses = 0
-        var tasks: [Any] = []
-        (0 ..< N).forEach { n in
-            combined.enumerated().forEach { i, _ in
-                let ex = expectation(description: String("\(i)-\(n)")).fulfiller
-                let task = manager.sharedTask(i) { result in
-                    totalcompletions += 1
-                    if let r = try? result.get() {
-                        sucesses += 1
-                        XCTAssert(r == "hello")
-                    }
-                    ex.noop()
-                }
-                tasks.append(task)
+            DispatchQueue.global().asyncAfter(deadline: .now()+0.1) {
+                completion(())
+                taskExpectations[index].fulfill()
             }
         }
-        waitForExpectations(timeout: TimeInterval(N)) { err in
-            XCTAssert(err == nil)
-            XCTAssert(sucesses == N)
-            XCTAssert(totalcompletions == N*combined.count)
-            XCTAssert(totaltasks == combined.count)
+        var tasks: [DeinitBlock] = (indexes + indexes).enumerated().map { completionIndex, taskIndex in
+            let exp = expectation(description: "Completion expectation for index: \(completionIndex)")
+            return manager.sharedTask(taskIndex) {
+                exp.fulfill()
+            }
         }
+        tasks.reverse()
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func testCancelation() {
+        let indexes = Array((0..<10))
+        let taskExpectations = indexes.map { expectation(description: "Task expectation for index: \($0)") }
+        let manager: SharedTaskManager<Int, Void> = SharedTaskManager()
+        manager.createTask = { index, completion in
+            DispatchQueue.global().asyncAfter(deadline: .now()+0.1) {
+                completion(())
+                taskExpectations[index].fulfill()
+            }
+        }
+        let exp1 = expectation(description: "One completion left")
+        var tasks: [DeinitBlock] = indexes.map { index in
+            manager.sharedTask(index) {
+                exp1.fulfill()
+            }
+        }
+        tasks = Array(tasks.prefix(1))
+        waitForExpectations(timeout: 1, handler: nil)
     }
 }
