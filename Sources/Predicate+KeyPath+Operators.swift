@@ -4,19 +4,21 @@ public protocol TypedPredicateProtocol { associatedtype Root }
 public class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
 public class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
 
-public extension KeyPath {
-    internal func unconstraindedPredicate(_ op: NSComparisonPredicate.Operator, _ value: Any?) -> ComparisonPredicate<Root> {
-        let ex1 = \Root.self == self ? NSExpression.expressionForEvaluatedObject() : NSExpression(forKeyPath: self)
+extension ComparisonPredicate {
+    convenience init<VAL>(_ kp: KeyPath<T, VAL>, _ op: NSComparisonPredicate.Operator, _ value: Any?) {
+        let ex1 = \T.self == kp ? NSExpression.expressionForEvaluatedObject() : NSExpression(forKeyPath: kp)
         let ex2 = NSExpression(forConstantValue: value)
-        return ComparisonPredicate(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
+        self.init(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
     }
+}
 
+public extension KeyPath {
     func predicate(_ op: NSComparisonPredicate.Operator, _ value: Value) -> ComparisonPredicate<Root> {
-        return unconstraindedPredicate(op, value)
+        return ComparisonPredicate(self, op, value)
     }
 
-    func predicate<T: Sequence>(_ op: NSComparisonPredicate.Operator, _ values: T) -> ComparisonPredicate<Root> where T.Element == Value {
-        return unconstraindedPredicate(op, values)
+    func predicate<SEQ: Sequence>(_ op: NSComparisonPredicate.Operator, _ values: SEQ) -> ComparisonPredicate<Root> where SEQ.Element == Value {
+        return ComparisonPredicate(self, op, values)
     }
 }
 
