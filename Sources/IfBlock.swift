@@ -47,4 +47,8 @@ public extension IfBlock {
             return false
         #endif
     }
+
+    static let isPlatform64Bit = IfBlock {
+        return Int.bitWidth == 64
+    }
 }
