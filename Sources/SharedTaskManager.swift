@@ -9,6 +9,21 @@ open class SharedTaskManager<K: Hashable, T> {
     }
 }
 
+public extension SharedTaskManager {
+    func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
+        let uuid = queue.mainSync {
+            return addCompletion(key, completion)
+        }
+        return DeinitBlock { [weak self] in
+            self?.queue.mainSync {
+                self?.removeCompletion(key, uuid)
+            }
+        }
+    }
+}
+
+// MARK: - internal
+
 extension SharedTaskManager {
     func removeCompletion(_ key: K, _ uuid: UUID) {
         guard let pair = completionGroups[key] else {
@@ -41,19 +56,6 @@ extension SharedTaskManager {
                 value(result)
             }
             completionGroups.removeValue(forKey: key)
-        }
-    }
-}
-
-public extension SharedTaskManager {
-    func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
-        let uuid = queue.mainSync {
-            return addCompletion(key, completion)
-        }
-        return DeinitBlock { [weak self] in
-            self?.queue.mainSync {
-                self?.removeCompletion(key, uuid)
-            }
         }
     }
 }
