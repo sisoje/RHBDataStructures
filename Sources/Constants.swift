@@ -1,10 +1,9 @@
 import Foundation
 
 public extension String {
-    internal static var applicationGroupIdentifier: String!
-
-    static func initApplicationGroupIdentifier(_ identifier: String) {
-        .applicationGroupIdentifier = identifier
+    static private(set) var applicationGroupIdentifier: String!
+    static func initOnce(applicationGroupIdentifier: String) {
+        self.applicationGroupIdentifier = applicationGroupIdentifier
     }
 }
 
