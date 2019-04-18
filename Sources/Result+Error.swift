@@ -1,9 +1,10 @@
 import Foundation
 
-public enum ErrorWithValue<T>: Error {
-    case value(T)
-    case valueAnderror(T, Error)
-    case empty
+public struct ErrorWithInfo<T>: Error {
+    public let info: T
+    public init(_ info: T) {
+        self.info = info
+    }
 }
 
 public extension Result where Failure == Error {
@@ -13,7 +14,7 @@ public extension Result where Failure == Error {
 
     func mapOptional<NewSuccess>(_ transform: (Success) -> NewSuccess?) -> Result<NewSuccess, Error> {
         return flatMap {
-            transform($0).map { .success($0) } ?? .failure(ErrorWithValue.value($0))
+            transform($0).map { .success($0) } ?? .failure(ErrorWithInfo($0))
         }
     }
 
@@ -22,14 +23,14 @@ public extension Result where Failure == Error {
             do {
                 return .success(try transform($0))
             } catch {
-                return .failure(ErrorWithValue.valueAnderror($0, error))
+                return .failure(ErrorWithInfo(($0, error)))
             }
         }
     }
 
     static func createResult(_ value: Success?, _ error: Error?) -> Result<Success, Error> {
         if let value = value, let error = error {
-            return .failure(ErrorWithValue.valueAnderror(value, error))
+            return .failure(ErrorWithInfo((value, error)))
         }
         if let value = value {
             return .success(value)
@@ -37,6 +38,6 @@ public extension Result where Failure == Error {
         if let error = error {
             return .failure(error)
         }
-        return .failure(ErrorWithValue<Success>.empty)
+        return .failure(ErrorWithInfo(()))
     }
 }

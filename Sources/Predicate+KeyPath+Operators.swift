@@ -1,24 +1,14 @@
 import Foundation
 
 public protocol TypedPredicateProtocol { associatedtype Root }
-public class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
-public class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
+public final class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
+public final class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
 
-public extension KeyPath {
-    func predicate(_ op: NSComparisonPredicate.Operator, _ value: Value) -> ComparisonPredicate<Root> {
-        return ComparisonPredicate(self, op, value)
-    }
-
-    func predicate<SEQ: Sequence>(_ op: NSComparisonPredicate.Operator, _ values: SEQ) -> ComparisonPredicate<Root> where SEQ.Element == Value {
-        return ComparisonPredicate(self, op, values)
-    }
-}
-
-public func && <TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> CompoundPredicate<TP1.Root> where TP1.Root == TP2.Root {
+public func &&<TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
 
-public func || <TP1: NSPredicate & TypedPredicateProtocol, TP2: NSPredicate & TypedPredicateProtocol>(p1: TP1, p2: TP2) -> CompoundPredicate<TP1.Root> where TP1.Root == TP2.Root {
+public func ||<TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .or, subpredicates: [p1, p2])
 }
 
@@ -27,31 +17,31 @@ public prefix func ! <TP: NSPredicate & TypedPredicateProtocol>(p: TP) -> Compou
 }
 
 public func == <E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> ComparisonPredicate<R> {
-    return kp.predicate(.equalTo, value)
+    return ComparisonPredicate(kp, .equalTo, value)
 }
 
 public func != <E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> ComparisonPredicate<R> {
-    return kp.predicate(.notEqualTo, value)
+    return ComparisonPredicate(kp, .notEqualTo, value)
 }
 
 public func > <C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> ComparisonPredicate<R> {
-    return kp.predicate(.greaterThan, value)
+    return ComparisonPredicate(kp, .greaterThan, value)
 }
 
 public func < <C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> ComparisonPredicate<R> {
-    return kp.predicate(.lessThan, value)
+    return ComparisonPredicate(kp, .lessThan, value)
 }
 
 public func <= <C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> ComparisonPredicate<R> {
-    return kp.predicate(.lessThanOrEqualTo, value)
+    return ComparisonPredicate(kp, .lessThanOrEqualTo, value)
 }
 
 public func >= <C: Comparable, R, K: KeyPath<R, C>>(kp: K, value: C) -> ComparisonPredicate<R> {
-    return kp.predicate(.greaterThanOrEqualTo, value)
+    return ComparisonPredicate(kp, .greaterThanOrEqualTo, value)
 }
 
 public func === <S: Sequence, R, K: KeyPath<R, S.Element>>(kp: K, values: S) -> ComparisonPredicate<R> where S.Element: Equatable {
-    return kp.predicate(.in, values)
+    return ComparisonPredicate(kp, .in, values)
 }
 
 // MARK: - internal

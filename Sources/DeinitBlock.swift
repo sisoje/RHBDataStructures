@@ -1,6 +1,6 @@
 import Foundation
 
-public class DeinitBlock {
+public final class DeinitBlock {
     let onDeinit: () -> Void
     public init(_ block: @escaping () -> Void) {
         onDeinit = block
