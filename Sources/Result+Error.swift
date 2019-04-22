@@ -1,6 +1,6 @@
 import Foundation
 
-public class ErrorWithInfo<T>: Error {
+public struct ErrorWithInfo<T>: Error {
     public let info: T
     public let location: String
     public init(_ info: T, function: String = #function, file: String = #file, line: Int = #line) {
