@@ -1,9 +1,11 @@
 import Foundation
 
-public struct ErrorWithInfo<T>: Error {
+public class ErrorWithInfo<T>: Error {
     public let info: T
-    public init(_ info: T) {
+    public let location: String
+    public init(_ info: T, function: String = #function, file: String = #file, line: Int = #line) {
         self.info = info
+        self.location = "Function: \(function) File: \(file) Line: \(line)"
     }
 }
 
