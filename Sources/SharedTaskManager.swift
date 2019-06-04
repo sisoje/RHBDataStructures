@@ -1,7 +1,7 @@
 import Foundation
 
 open class SharedTaskManager<K: Hashable, T> {
-    public var createTask: ((K, @escaping (T)->Void) -> Any)!
+    public var createTask: ((K, @escaping (T) -> Void) -> Any)!
     var completionGroups: [K: (Any, [UUID: (T) -> Void])] = [:]
     let queue: DispatchQueue
     public init(queue: DispatchQueue = .main) {
@@ -12,7 +12,7 @@ open class SharedTaskManager<K: Hashable, T> {
 public extension SharedTaskManager {
     func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
         let uuid = queue.syncIfNotMain {
-            return addCompletion(key, completion)
+            addCompletion(key, completion)
         }
         return DeinitBlock { [weak self] in
             self?.queue.syncIfNotMain {
@@ -38,7 +38,7 @@ extension SharedTaskManager {
         }
     }
 
-    func addCompletion(_ key: K, _ completion: @escaping (T)->Void) -> UUID {
+    func addCompletion(_ key: K, _ completion: @escaping (T) -> Void) -> UUID {
         let pair = completionGroups[key]
         let sharedTask = pair?.0 ?? createTask(key) { [weak self] result in
             self?.finish(key, result)

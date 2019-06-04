@@ -11,7 +11,7 @@ open class CachedTaskManager<K: Hashable, T: AnyObject> {
 }
 
 public extension CachedTaskManager {
-    func cached(_ key: K, _ block: @escaping (Result<T, Error>)->Void) -> DeinitBlock? {
+    func cached(_ key: K, _ block: @escaping (Result<T, Error>) -> Void) -> DeinitBlock? {
         if let object = cache[key] {
             block(.success(object))
             return nil

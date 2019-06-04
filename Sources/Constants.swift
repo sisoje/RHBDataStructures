@@ -1,7 +1,7 @@
 import Foundation
 
 public extension String {
-    static private(set) var applicationGroupIdentifier: String!
+    private(set) static var applicationGroupIdentifier: String!
     static func initOnce(applicationGroupIdentifier: String) {
         self.applicationGroupIdentifier = applicationGroupIdentifier
     }

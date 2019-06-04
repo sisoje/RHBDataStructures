@@ -24,7 +24,7 @@ public extension IfBlock {
 public extension IfBlock {
     static let debug = IfBlock {
         var b: Bool = false
-        assert({b = true}() == {}())
+        assert({ b = true }() == {}())
         return b
     }
 
@@ -49,6 +49,6 @@ public extension IfBlock {
     }
 
     static let platform64Bit = IfBlock {
-        return Int.bitWidth == 64
+        Int.bitWidth == 64
     }
 }

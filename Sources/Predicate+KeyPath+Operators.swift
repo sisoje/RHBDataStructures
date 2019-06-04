@@ -4,11 +4,11 @@ public protocol TypedPredicateProtocol { associatedtype Root }
 public final class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
 public final class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
 
-public func &&<TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
+public func && <TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
 
-public func ||<TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
+public func || <TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .or, subpredicates: [p1, p2])
 }
 
