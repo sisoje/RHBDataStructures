@@ -63,7 +63,7 @@ final class DeinitBlockTests: XCTestCase {
 
     func testFulfillWithDispatch() {
         let queue = DispatchQueue(label: #function)
-        (0 ..< 3).forEach { index in
+        (0..<3).forEach { index in
             let fulfiller = expectation(description: "\(#function) \(index)").fulfiller
             queue.async {
                 fulfiller.noop()
@@ -74,7 +74,7 @@ final class DeinitBlockTests: XCTestCase {
 
     func testFulfillWithOperation() {
         let queue = OperationQueue()
-        (0 ..< 3).forEach { index in
+        (0..<3).forEach { index in
             let fulfiller = expectation(description: "\(#function) \(index)").fulfiller
             autoreleasepool {
                 queue.addOperation {

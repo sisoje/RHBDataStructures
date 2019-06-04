@@ -14,6 +14,6 @@ public extension objc_property_t {
         guard let classPropertyList = class_copyPropertyList(t, &count32) else {
             return []
         }
-        return (0 ..< Int(count32)).map { classPropertyList[$0] }
+        return (0..<Int(count32)).map { classPropertyList[$0] }
     }
 }

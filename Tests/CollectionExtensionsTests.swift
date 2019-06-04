@@ -4,7 +4,7 @@ import XCTest
 final class CollectionExtensionsTests: XCTestCase {
     func testEmpty() {
         let emptyArray = [Int]()
-        (-1 ... 1).forEach {
+        (-1...1).forEach {
             XCTAssertNil(emptyArray[safe: $0])
         }
     }
