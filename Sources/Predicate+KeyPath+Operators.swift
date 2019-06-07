@@ -1,20 +1,34 @@
 import Foundation
 
-public protocol TypedPredicateProtocol { associatedtype Root }
-public final class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol { public typealias Root = T }
-public final class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol { public typealias Root = T }
+// MARK: - typed predicate types
 
-public func && <TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
+public protocol TypedPredicateProtocol: NSPredicate {
+    associatedtype Root
+}
+
+public final class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol {
+    public typealias Root = T
+}
+
+public final class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol {
+    public typealias Root = T
+}
+
+// MARK: - compound operators
+
+public func && <TP: TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
 
-public func || <TP: NSPredicate & TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
+public func || <TP: TypedPredicateProtocol>(p1: TP, p2: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .or, subpredicates: [p1, p2])
 }
 
-public prefix func ! <TP: NSPredicate & TypedPredicateProtocol>(p: TP) -> CompoundPredicate<TP.Root> {
+public prefix func ! <TP: TypedPredicateProtocol>(p: TP) -> CompoundPredicate<TP.Root> {
     return CompoundPredicate(type: .not, subpredicates: [p])
 }
+
+// MARK: - comparison operators
 
 public func == <E: Equatable, R, K: KeyPath<R, E>>(kp: K, value: E) -> ComparisonPredicate<R> {
     return ComparisonPredicate(kp, .equalTo, value)
