@@ -2,17 +2,11 @@ import Foundation
 
 // MARK: - typed predicate types
 
-public protocol TypedPredicateProtocol: NSPredicate {
-    associatedtype Root
-}
+public protocol TypedPredicateProtocol: NSPredicate { associatedtype Root }
 
-public final class CompoundPredicate<T>: NSCompoundPredicate, TypedPredicateProtocol {
-    public typealias Root = T
-}
+public final class CompoundPredicate<Root>: NSCompoundPredicate, TypedPredicateProtocol {}
 
-public final class ComparisonPredicate<T>: NSComparisonPredicate, TypedPredicateProtocol {
-    public typealias Root = T
-}
+public final class ComparisonPredicate<Root>: NSComparisonPredicate, TypedPredicateProtocol {}
 
 // MARK: - compound operators
 
@@ -61,8 +55,8 @@ public func === <S: Sequence, R, K: KeyPath<R, S.Element>>(kp: K, values: S) -> 
 // MARK: - internal
 
 extension ComparisonPredicate {
-    convenience init<VAL>(_ kp: KeyPath<T, VAL>, _ op: NSComparisonPredicate.Operator, _ value: Any?) {
-        let ex1 = \T.self == kp ? NSExpression.expressionForEvaluatedObject() : NSExpression(forKeyPath: kp)
+    convenience init<VAL>(_ kp: KeyPath<Root, VAL>, _ op: NSComparisonPredicate.Operator, _ value: Any?) {
+        let ex1 = \Root.self == kp ? NSExpression.expressionForEvaluatedObject() : NSExpression(forKeyPath: kp)
         let ex2 = NSExpression(forConstantValue: value)
         self.init(leftExpression: ex1, rightExpression: ex2, modifier: .direct, type: op)
     }
