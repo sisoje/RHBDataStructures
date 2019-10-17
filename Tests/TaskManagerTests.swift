@@ -6,7 +6,7 @@ final class TaskManagerTests: XCTestCase {
         let indexes = Array(0..<3)
         let datas: [Data] = indexes.map { _ in UUID().uuidString.data(using: .utf8)! }
         let urls: [URL] = datas.map {
-            let url = URL.temporary.appendingPathComponent(UUID().uuidString)
+            let url = RHBFoundationConstants.temporaryDirectoryUrl.appendingPathComponent(UUID().uuidString)
             try! $0.write(to: url)
             return url
         }
@@ -18,7 +18,10 @@ final class TaskManagerTests: XCTestCase {
                 completion(data)
                 taskExpectations[index].fulfill()
             }
-            return task.runner
+            task.resume()
+            return DeinitBlock {
+                task.cancel()
+            }
         }
         var tasks: [DeinitBlock] = (indexes + indexes).enumerated().map { completionIndex, taskIndex in
             let exp = expectation(description: "Completion expectation for : \(completionIndex)")

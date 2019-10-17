@@ -28,8 +28,8 @@ final class DeinitBlockTests: XCTestCase {
     func testNotificationCenter() {
         let notificationName = NSNotification.Name("testNotificationCenter")
         let exp = expectation(description: notificationName.rawValue)
-        var rm: DeinitBlock?
-        rm = NotificationCenter.default.addSmartObserver(name: notificationName) { _ in
+        var rm: Any?
+        rm = NotificationCenter.default.addObserver(forName: notificationName, object: nil, queue: .main) { _ in
             XCTAssertNotNil(rm)
             rm = nil
             exp.fulfill()
@@ -48,7 +48,9 @@ final class DeinitBlockTests: XCTestCase {
         }
         autoreleasepool {
             let ex = expectation(description: #function)
-            let invalidation = timer.invalidation
+            let invalidation = DeinitBlock {
+                timer.invalidate()
+            }
             DispatchQueue.global().asyncAfter(deadline: .now() + tick * 2) {
                 invalidation.noop()
                 ex.fulfill()
