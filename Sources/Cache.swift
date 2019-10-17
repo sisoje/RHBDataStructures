@@ -13,7 +13,7 @@ public extension Cache {
 
     subscript(_ h: H) -> V? {
         get {
-            return cache.object(forKey: h as AnyObject)
+            cache.object(forKey: h as AnyObject)
         }
         set {
             if let v = newValue {

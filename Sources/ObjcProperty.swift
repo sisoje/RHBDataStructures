@@ -2,11 +2,11 @@ import Foundation
 
 public extension objc_property_t {
     func typeInfo() -> String {
-        return NSString(utf8String: property_getAttributes(self)!)! as String
+        NSString(utf8String: property_getAttributes(self)!)! as String
     }
 
     func propertyName() -> String {
-        return NSString(utf8String: property_getName(self))! as String
+        NSString(utf8String: property_getName(self))! as String
     }
 
     static func propertyList<T: NSObject>(_ t: T.Type) -> [objc_property_t] {
