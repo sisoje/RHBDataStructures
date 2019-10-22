@@ -5,7 +5,7 @@ public struct ErrorWithInfo: LocalizedError {
     public let file: String
     public let line: Int
     public let function: String
-    
+
     public init(
         _ info: Any? = nil,
         file: String = #file,
