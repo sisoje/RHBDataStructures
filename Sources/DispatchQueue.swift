@@ -1,10 +1,10 @@
 import Foundation
 
 public extension DispatchQueue {
-    func syncIfNotMain<T>(_ block: () -> T) -> T {
+    func syncMain<T>(_ block: () throws -> T) rethrows -> T {
         guard self == .main, Thread.isMainThread else {
-            return sync(execute: block)
+            return try sync(execute: block)
         }
-        return block()
+        return try block()
     }
 }

@@ -11,11 +11,11 @@ open class SharedTaskManager<K: Hashable, T> {
 
 public extension SharedTaskManager {
     func sharedTask(_ key: K, _ completion: @escaping (T) -> Void) -> DeinitBlock {
-        let uuid = queue.syncIfNotMain {
+        let uuid = queue.syncMain {
             addCompletion(key, completion)
         }
         return DeinitBlock { [weak self] in
-            self?.queue.syncIfNotMain {
+            self?.queue.syncMain {
                 self?.removeCompletion(key, uuid)
             }
         }
@@ -51,7 +51,7 @@ extension SharedTaskManager {
     }
 
     func finish(_ key: K, _ result: T) {
-        queue.syncIfNotMain {
+        queue.syncMain {
             completionGroups[key]?.1.forEach { _, value in
                 value(result)
             }

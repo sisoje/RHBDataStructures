@@ -1,25 +1,20 @@
 import Foundation
 
-open class Cache<H: Hashable, V: AnyObject> {
-    public let cache = NSCache<AnyObject, V>()
-
+open class Cache<H: Hashable, V: Any> {
+    public let nsCache = NSCache<AnyObject, AnyObject>()
     public init() {}
 }
 
 public extension Cache {
-    func removeAllObjects() {
-        cache.removeAllObjects()
-    }
-
     subscript(_ h: H) -> V? {
         get {
-            cache.object(forKey: h as AnyObject)
+            nsCache.object(forKey: h as AnyObject) as? V
         }
         set {
             if let v = newValue {
-                cache.setObject(v, forKey: h as AnyObject)
+                nsCache.setObject(v as AnyObject, forKey: h as AnyObject)
             } else {
-                cache.removeObject(forKey: h as AnyObject)
+                nsCache.removeObject(forKey: h as AnyObject)
             }
         }
     }
